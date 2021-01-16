@@ -1,3 +1,6 @@
 [submodule "JUCE"]
 	path = JUCE
 	url = https://github.com/juce-framework/JUCE.git
+[submodule "RUBDSP"]
+	path = RUBDSP
+	url = https://github.com/TheRubeThing/RUBDSP.git
