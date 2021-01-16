@@ -8,8 +8,8 @@
 namespace rubdsp
 {
 
-enum FILTER_COEFF { a0, a1, a2, b1, b2, c0, d0, num_coeffs};
-enum FILTER_STATE { x_z1, x_z2, y_z1, y_z2, num_states};
+enum BIQUAD_COEFF { a0, a1, a2, b1, b2, c0, d0, num_coeffs};
+enum BIQUAD_STATE { x_z1, x_z2, y_z1, y_z2, num_states};
 enum class BIQUAD_ALGORITHM
 {
     DIRECT,
@@ -23,6 +23,11 @@ struct BiquadParameters
     BiquadParameters() {}
     BiquadParameters& operator=(const BiquadParameters& parameters)
     {
+        if (this == &parameters)
+        {
+			return *this;
+        }
+
         biquad_calc_type = parameters.biquad_calc_type;
 
         return *this;
@@ -33,7 +38,7 @@ struct BiquadParameters
 
 class Biquad : IAudioSignalProcessor
 {
-public:
+public: 
     Biquad() {}
     ~Biquad() = default;
 
@@ -51,9 +56,14 @@ public:
 
     std::array<double, num_states> getStateArray();
 
+    double getMagnitudedB(double frequency);
+
+    double getMagnitudeGain(double frequency);
+
 private:
-    std::array<double, num_coeffs> _coeff_array;
-    std::array<double, num_states> _state_array;
+
+    std::array<double, num_coeffs> _coeff_array{0.0};
+    std::array<double, num_states> _state_array{0.0};
     BiquadParameters _parameters;
 };
 
