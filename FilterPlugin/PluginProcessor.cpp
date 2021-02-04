@@ -14,8 +14,8 @@ FilterPluginAudioProcessor::FilterPluginAudioProcessor()
     _parameters(*this, nullptr, juce::Identifier("FilterPlugin"),{
         std::make_unique<juce::AudioParameterFloat> ("fc", // parameter ID
                                                      "Cutoff frequency", // parameter name
-                                                     20.0, // minimum value
-                                                     18000.0, // maximum value
+                                                     10.0, // minimum value
+                                                     20000.0, // maximum value
                                                      1000.0
                                                      ),
         std::make_unique<juce::AudioParameterFloat> ("Q", "Q", 0.0, 10.0, 3.0),

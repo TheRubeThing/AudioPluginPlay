@@ -48,6 +48,10 @@ public:
         return &_parameters;
     }
 
+    double getMagnitudedB(double frequency) {
+        return _left_filter.getMagnitudedB(frequency);
+    }
+
 private:
     juce::AudioProcessorValueTreeState _parameters;
     rubdsp::AudioFilter _left_filter;

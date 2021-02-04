@@ -7,7 +7,8 @@ FilterPluginAudioProcessorEditor::FilterPluginAudioProcessorEditor (FilterPlugin
       _cutoff_slider_attachment(*p.getParameterState(), "fc", _cutoff_slider),
       _Q_slider_attachment(*p.getParameterState(), "Q", _Q_slider),
       _boost_cut_slider_attachment(*p.getParameterState(), "boost_cut", _boost_cut_slider),
-      _filter_type_combo_box_attachment(*p.getParameterState(), "filter_type", _filter_type_combo_box)
+      _filter_type_combo_box_attachment(*p.getParameterState(), "filter_type", _filter_type_combo_box),
+      _freq_plot(p)
 {
     juce::ignoreUnused (processorRef);
     // Make sure that before the constructor has finished, you've set the
@@ -19,19 +20,22 @@ FilterPluginAudioProcessorEditor::FilterPluginAudioProcessorEditor (FilterPlugin
     setSize(400.0,400.0/ratio);
 
     // Cutoff slider
-    setupSlider(_cutoff_slider, 20.0, 20000.0, " Hz");
+    setupSlider(_cutoff_slider, 10.0, 20000.0, " Hz");
     _cutoff_slider.setSkewFactor(0.25);
 
     addAndMakeVisible(_cutoff_slider_label);
     _cutoff_slider_label.setText("Cutoff frequency", juce::dontSendNotification);
     _cutoff_slider_label.attachToComponent(&_cutoff_slider, false);
+    _cutoff_slider_label.setJustificationType(juce::Justification::centred);
 
     // Q slider
-    setupSlider(_Q_slider, 0.0, 10.0, "");
+    setupSlider(_Q_slider, 0.01, 10.0, "");
+    _Q_slider.setSkewFactor(0.5);
 
     addAndMakeVisible(_Q_slider_label);
     _Q_slider_label.setText("Q", juce::dontSendNotification);
     _Q_slider_label.attachToComponent(&_Q_slider, false);
+    _Q_slider_label.setJustificationType(juce::Justification::centred);
 
     // boost cut
     setupSlider(_boost_cut_slider, -96.0, 24.0, " dB");
@@ -39,6 +43,7 @@ FilterPluginAudioProcessorEditor::FilterPluginAudioProcessorEditor (FilterPlugin
     addAndMakeVisible(_boost_cut_slider_label);
     _boost_cut_slider_label.setText("Boost/Cut", juce::dontSendNotification);
     _boost_cut_slider_label.attachToComponent(&_boost_cut_slider, false);
+    _boost_cut_slider_label.setJustificationType(juce::Justification::centred);
 
     // type combo box
     addAndMakeVisible(_filter_type_combo_box);
@@ -49,6 +54,10 @@ FilterPluginAudioProcessorEditor::FilterPluginAudioProcessorEditor (FilterPlugin
     addAndMakeVisible(_filter_type_combo_box_label);
     _filter_type_combo_box_label.setText("Filter type", juce::dontSendNotification);
     _filter_type_combo_box_label.attachToComponent(&_filter_type_combo_box, false);
+    _filter_type_combo_box_label.setJustificationType(juce::Justification::centred);
+
+    // Frequency plot
+    addAndMakeVisible(_freq_plot);
 }
 
 FilterPluginAudioProcessorEditor::~FilterPluginAudioProcessorEditor()
@@ -70,17 +79,26 @@ void FilterPluginAudioProcessorEditor::resized()
     int component_box = (getWidth() - 5.0f * margin * getHeight()) / 4.0f;
     auto bounds = getBounds();
     bounds.reduce(margin*getHeight(), margin*getHeight());
-    bounds.removeFromTop(component_box * 2); // space for filter graph
-    _cutoff_slider.setBounds(bounds.removeFromLeft(component_box).reduced(margin * getHeight(), margin * getHeight()));
+    _freq_plot.setBounds(bounds.removeFromTop(component_box * 2)); // space for filter graph
+    
+    auto cutoff_box = bounds.removeFromLeft(component_box).reduced(margin * getHeight(), margin * getHeight());
+    _cutoff_slider_label.setBounds(cutoff_box.removeFromTop(20));
+    _cutoff_slider.setBounds(cutoff_box);
     bounds.removeFromLeft(margin * getHeight());
-    _Q_slider.setBounds(bounds.removeFromLeft(component_box).reduced(margin * getHeight(), margin * getHeight()));
+
+    auto Q_box = bounds.removeFromLeft(component_box).reduced(margin * getHeight(), margin * getHeight());
+    _Q_slider_label.setBounds(Q_box.removeFromTop(20));
+    _Q_slider.setBounds(Q_box);
     bounds.removeFromLeft(margin * getHeight());
-    _boost_cut_slider.setBounds(bounds.removeFromLeft(component_box).reduced(margin * getHeight(), margin * getHeight()));
+
+    auto boost_cut_box = bounds.removeFromLeft(component_box).reduced(margin * getHeight(), margin * getHeight());
+    _boost_cut_slider_label.setBounds(boost_cut_box.removeFromTop(20));
+    _boost_cut_slider.setBounds(boost_cut_box);
     bounds.removeFromLeft(margin * getHeight());
     // combo box space
-    bounds.removeFromBottom(component_box / 3);
-    bounds.removeFromTop(component_box / 3);
-    _filter_type_combo_box.setBounds(bounds.reduced(margin * getHeight(), margin * getHeight()));
+    auto filter_type_box = bounds.removeFromLeft(component_box).reduced(margin * getHeight(), margin * getHeight());
+    _filter_type_combo_box_label.setBounds(filter_type_box.removeFromTop(20));
+    _filter_type_combo_box.setBounds(filter_type_box.removeFromTop(component_box / 3));
 }
 
 void FilterPluginAudioProcessorEditor::setupSlider(juce::Slider& slider, 

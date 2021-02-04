@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PluginProcessor.h"
+#include "FrequencyPlot.h"
 
 //==============================================================================
 class FilterPluginAudioProcessorEditor  : public juce::AudioProcessorEditor
@@ -34,6 +35,8 @@ private:
     juce::ComboBox _filter_type_combo_box;
     juce::Label _filter_type_combo_box_label;
     juce::AudioProcessorValueTreeState::ComboBoxAttachment _filter_type_combo_box_attachment;
+
+    FrequencyPlot _freq_plot;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterPluginAudioProcessorEditor)
 };
