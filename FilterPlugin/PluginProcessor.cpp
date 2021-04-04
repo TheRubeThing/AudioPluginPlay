@@ -20,7 +20,7 @@ FilterPluginAudioProcessor::FilterPluginAudioProcessor()
                                                      ),
         std::make_unique<juce::AudioParameterFloat> ("Q", "Q", 0.0, 10.0, 3.0),
         std::make_unique<juce::AudioParameterFloat> ("boost_cut", "Boost/Cut", -96.0, 24.0, 0.0),
-        std::make_unique<juce::AudioParameterInt> ("filter_type", "Filter Type", 0, 1, 0)
+        std::make_unique<juce::AudioParameterInt> ("filter_type", "Filter Type", 0, rubdsp::filterAlgorithm::NUM_ALGROITHMS - 1, 1)
     })
 {
 }
@@ -155,20 +155,8 @@ void FilterPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     parameters.Q = *_parameters.getRawParameterValue("Q");
     parameters.boost_cut_db = *_parameters.getRawParameterValue("boost_cut");
     
-     int algorithm_index = _parameters.getParameterAsValue("filter_type").getValue();
-    switch (algorithm_index)
-    {
-        case 0:
-        {
-            parameters.algorithm = rubdsp::filterAlgorithm::LPF1;
-            break;
-        }
-        case 1:
-        {
-            parameters.algorithm = rubdsp::filterAlgorithm::LPF2;
-            break;
-        }
-    }
+    int algorithm_index = _parameters.getParameterAsValue("filter_type").getValue();
+    parameters.algorithm = static_cast<rubdsp::filterAlgorithm>(algorithm_index);
 
 
     _left_filter.setParameters(parameters);

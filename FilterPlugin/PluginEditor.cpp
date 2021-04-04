@@ -47,9 +47,13 @@ FilterPluginAudioProcessorEditor::FilterPluginAudioProcessorEditor (FilterPlugin
 
     // type combo box
     addAndMakeVisible(_filter_type_combo_box);
-    _filter_type_combo_box.addItem("LPF1", 1);
-    _filter_type_combo_box.addItem("LPF2", 2);
-    _filter_type_combo_box.setSelectedId(1);
+    for (int algo_idx = 0; algo_idx < rubdsp::filterAlgorithm::NUM_ALGROITHMS; ++algo_idx)
+    {
+        std::string log_string = "Creating: " + rubdsp::filterAlgorithmStrings[algo_idx] + " with item id: " + std::to_string(algo_idx + 1);
+        DBG(log_string);
+        _filter_type_combo_box.addItem(rubdsp::filterAlgorithmStrings[algo_idx], algo_idx + 1);
+    }
+    _filter_type_combo_box.setSelectedId(static_cast<int>(p.getParameterState()->getParameterAsValue("filter_type").getValue()) + 1);
 
     addAndMakeVisible(_filter_type_combo_box_label);
     _filter_type_combo_box_label.setText("Filter type", juce::dontSendNotification);

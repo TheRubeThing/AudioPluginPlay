@@ -51,6 +51,10 @@ public:
         {
             float y_value = rubdsp::map_value(-12.0f, 12.0f, height, 0.0f, _y_points[i]);
             float x_value = i * width / (NUM_GRAPH_POINTS - 1);//rubdsp::map_value(0.0f, FREQ_PLOT_MAX, 0.0f, width, _x_points[i]);
+            if (isnan(y_value))
+            {
+                y_value = 0.0f;
+            }
             path.lineTo(x_value, y_value);
             // g.setColour(juce::Colours::orangered);
             // g.fillEllipse(x_value - 5.0f, y_value - 5.0f, 10.0f, 10.0f);
