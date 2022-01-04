@@ -49,7 +49,7 @@ public:
         path.startNewSubPath(0.0f, height + 1.0f);
         for (int i = 0; i < NUM_GRAPH_POINTS; ++i)
         {
-            float y_value = rubdsp::map_value(-12.0f, 12.0f, height, 0.0f, _y_points[i]);
+            float y_value = rubdsp::map_value(-12.0f, 12.0f, height, 0.0f, _y_points[i], true);
             float x_value = i * width / (NUM_GRAPH_POINTS - 1);//rubdsp::map_value(0.0f, FREQ_PLOT_MAX, 0.0f, width, _x_points[i]);
             if (isnan(y_value))
             {
